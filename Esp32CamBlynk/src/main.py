@@ -30,22 +30,30 @@ void myTimerEvent()
 
 }
 
+void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
+  Blynk.connect();
+}
+
 void setup()
 {
   // Debug console
   // pinMode(BUILT_IN_LED, OUTPUT);
-  
+  WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
   timer.setInterval(5000L, myTimerEvent);
+  
   Serial.begin(115200);
-
-  if(!Blynk.connected()){
-    Blynk.disconnect();
-    delay(10000);
-    Blynk.config(auth);
-    Blynk.connectWiFi(ssid, pass);
-    Blynk.connect(15);
+  WiFi.begin(ssid, pass);
+  uint32_t count = 0;
+  while(WiFi.status() != WL_CONNECTED){
+    delay(100);
+    count++;
+    if(count >= 150) ESP.restart();
+    
   }
+  Blynk.config(auth);
 }
+  
+
 
 void loop()
 {
@@ -57,9 +65,3 @@ void loop()
 BLYNK_CONNECTED(){
   Blynk.syncAll();
 }
-
-// BLYNK_WRITE(V0){ 
-//   int val = param.asInt();
-//   digitalWrite(BUILT_IN_LED, val);
-// }
-
