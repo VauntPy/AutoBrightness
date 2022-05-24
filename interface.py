@@ -6,7 +6,7 @@ import requests
 class Screen:
     def __init__(self, token, vPin) -> None:
         self.url = f"https://blynk.cloud/external/api/get?token={token}&{vPin}"
-        self.pVal = "0"
+        self.pVal = "100"
     def setBrightness(self):
         self.cVal = self.getExternalLight()
         if self.cVal != self.pVal: 
