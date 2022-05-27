@@ -7,8 +7,8 @@
 /* Comment this out to disable prints and save space */
 #define BLYNK_PRINT Serial
 
-#define I2C_SDA 12
-#define I2C_SCL 13
+#define I2C_SDA 15
+#define I2C_SCL 14
 
 /* Fill-in your Template ID (only if using Blynk.Cloud) */
 //#define BLYNK_TEMPLATE_ID   "YourTemplateID"
@@ -31,14 +31,16 @@ void myTimerEvent()
 {
   // You can send any value at any time.
   // Please don't send more that 10 values per second.
-  int rVal = random(0, 101);
-  Blynk.virtualWrite(V1, rVal);
   
+  // int rVal = random(0, 101);
+  // Blynk.virtualWrite(V1, rVal);
+
   if (lightMeter.measurementReady()) {
     float lux = lightMeter.readLightLevel();
-    Blynk.virtualWrite(V2, lux);
+    int aux = round(lux);
+    Blynk.virtualWrite(V1, aux);
+    Serial.println(aux);
   }
-
 }
 
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
@@ -48,17 +50,18 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
 void setup()
 {
   // Debug console
-  lightMeter.begin(BH1750::ONE_TIME_HIGH_RES_MODE_2);
-  Wire.begin(I2C_SDA, I2C_SCL, 100000);
-  
+  Wire.begin(I2C_SDA, I2C_SCL);
+  lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE);
+
   WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
-  timer.setInterval(5000L, myTimerEvent);
+  timer.setInterval(1000L, myTimerEvent);
   
   Serial.begin(115200);
   WiFi.begin(ssid, pass);
   uint32_t count = 0;
   while(WiFi.status() != WL_CONNECTED){
     delay(100);
+    Serial.println(count);
     count++;
     if(count >= 150) ESP.restart();
     
