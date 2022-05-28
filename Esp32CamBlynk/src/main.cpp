@@ -1,9 +1,3 @@
-#include <BlynkSimpleEsp32.h>
-#include <WiFiClient.h>
-#include <BH1750.h>
-#include <WiFi.h>
-#include <Wire.h>
-
 /* Comment this out to disable prints and save space */
 #define BLYNK_PRINT Serial
 
@@ -14,6 +8,12 @@
 //#define BLYNK_TEMPLATE_ID   "YourTemplateID"
 #define BLYNK_DEVICE_NAME "YOUR-DEVICE-NAME"
 #define BLYNK_TEMPLATE_ID "YOUR-TEMPLATE-ID"
+
+#include <BlynkSimpleEsp32.h>
+#include <WiFiClient.h>
+#include <BH1750.h>
+#include <WiFi.h>
+#include <Wire.h>
 
 // You should get Auth Token in the Blynk App.
 // Go to the Project Settings (nut icon).
