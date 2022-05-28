@@ -31,16 +31,12 @@ void myTimerEvent()
 {
   // You can send any value at any time.
   // Please don't send more that 10 values per second.
-  
-  // int rVal = random(0, 101);
-  // Blynk.virtualWrite(V1, rVal);
-
-  if (lightMeter.measurementReady()) {
-    float lux = lightMeter.readLightLevel();
-    int aux = round(lux);
-    Blynk.virtualWrite(V1, aux);
-    Serial.println(aux);
-  }
+  lightMeter.begin(BH1750::ONE_TIME_HIGH_RES_MODE);
+  while (!lightMeter.measurementReady());
+  float lux = lightMeter.readLightLevel();
+  unsigned int aux = round(lux);
+  Blynk.virtualWrite(V1, aux);
+  Serial.println(aux);    
 }
 
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
@@ -51,14 +47,16 @@ void setup()
 {
   // Debug console
   Wire.begin(I2C_SDA, I2C_SCL);
-  lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE);
+  // lightMeter.begin(BH1750::ONE_TIME_HIGH_RES_MODE);
+  // BH1750::CONTINUOUS_HIGH_RES_MODE
+  // BH1750::ONE_TIME_HIGH_RES_MODE
 
   WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
-  timer.setInterval(1000L, myTimerEvent);
+  timer.setInterval(5000L, myTimerEvent);
   
   Serial.begin(115200);
   WiFi.begin(ssid, pass);
-  uint32_t count = 0;
+  unsigned int count = 0;
   while(WiFi.status() != WL_CONNECTED){
     delay(100);
     Serial.println(count);
