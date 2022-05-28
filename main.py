@@ -1,4 +1,3 @@
-from turtle import delay
 from dotenv import load_dotenv
 import interface
 import time
