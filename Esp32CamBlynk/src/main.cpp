@@ -3,6 +3,7 @@
 
 #define I2C_SDA 15
 #define I2C_SCL 14
+#define FLASH_LED 4
 
 /* Fill-in your Template ID (only if using Blynk.Cloud) */
 //#define BLYNK_TEMPLATE_ID   "YourTemplateID"
@@ -45,11 +46,11 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
 
 void setup()
 {
+  pinMode(FLASH_LED, OUTPUT);
+  digitalWrite(FLASH_LED, LOW);
+ 
   // Debug console
   Wire.begin(I2C_SDA, I2C_SCL);
-  // lightMeter.begin(BH1750::ONE_TIME_HIGH_RES_MODE);
-  // BH1750::CONTINUOUS_HIGH_RES_MODE
-  // BH1750::ONE_TIME_HIGH_RES_MODE
 
   WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
   timer.setInterval(5000L, myTimerEvent);
