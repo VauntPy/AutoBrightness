@@ -2,49 +2,50 @@ import subprocess
 import serial
 
 class SerialConn:
-    def __init__(self, bRate: int, port: str):
+    aux = '1'
+
+    def __init__(self, bRate: int, port: str, timeOut: int):
         self.bRate = bRate
         self.port = port
         self.ser = serial.Serial()
+        self.timeOut = timeOut
 
     def setConn(self):
         try: 
             self.ser.baudrate = self.bRate
             self.ser.port = self.port
+            self.ser.timeout = self.timeOut
             self.ser.open()
-            print(self.ser.is_open)
+            if(self.ser.is_open):
+                print(f"Connected to Port {self.port}")
         except serial.SerialException:
             print(f"Couldn't connect to Port {self.port}")
 
-    def readBytes(self, numBytes):
-        return self.ser.read(numBytes)
-
     def sendBytes(self):
-        self.ser.write(b'Connection')
+        self.ser.write(self.aux.encode())
+
+    def readBytes(self):
+        return self.ser.readline().decode()
+
+    def getLux(self):
+        self.sendBytes()
+        return self.readBytes()
 
     def closeConn(self):
         self.ser.close()
         print(f'Port {self.port} Closed')
 
-    @staticmethod
-    def listPorts():
+    @classmethod
+    def setPort(cls, bRate: int, timeOut=1):
         sp = subprocess.run('python -m serial.tools.list_ports', stdout=subprocess.PIPE)
-        return sp.stdout.decode().rstrip().split()
+        port = sp.stdout.decode().rstrip().split()[0]
+        return cls(bRate, port, timeOut)
 
 
+sc = SerialConn.setPort(115200 , 2)
+sc.setConn()
+print(sc.getLux())
+sc.closeConn()
 
-
-# n = SerialConn.listPorts()
-# sec = SerialConn(19200, n[0])
-# sec.setConn()
-# sec.sendBytes()
-# d = sec.readBytes(8)
-# print(d)
-
-
-# b = sec.readBytes(8)
-# b = b.decode()
-# print(b)
-# print(type(b))
 
 

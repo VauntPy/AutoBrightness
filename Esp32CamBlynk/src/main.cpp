@@ -28,16 +28,34 @@ char pass[] = "YOUR-WIFI-PASSWORD-HERE";
 BlynkTimer timer;
 BH1750 lightMeter(0x23);
 
-void myTimerEvent()
-{
-  // You can send any value at any time.
-  // Please don't send more that 10 values per second.
+unsigned int getLux(){
   lightMeter.begin(BH1750::ONE_TIME_HIGH_RES_MODE);
   while (!lightMeter.measurementReady());
   float lux = lightMeter.readLightLevel();
   unsigned int aux = round(lux);
-  Blynk.virtualWrite(V1, aux);
-  Serial.println(aux);    
+  return aux;
+  // Blynk.virtualWrite(V1, aux); //for IOT   
+
+}
+
+void myTimerEvent()
+{
+  // You can send any value at any time.
+  // Please don't send more that 10 values per second.
+  // lightMeter.begin(BH1750::ONE_TIME_HIGH_RES_MODE);
+  // while (!lightMeter.measurementReady());
+  // float lux = lightMeter.readLightLevel();
+  // unsigned int aux = round(lux);
+  // Blynk.virtualWrite(V1, aux);
+  // Serial.print(aux);    
+  
+
+  if (Serial.available() > 0){
+      Serial.read();// Flush Serial
+      // while (Serial.availableForWrite() < 6);
+      Serial.print(getLux());
+    
+  }
 }
 
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
