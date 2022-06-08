@@ -42,10 +42,10 @@ class SerialConn:
         return cls(bRate, port, timeOut)
 
 
-sc = SerialConn.setPort(115200 , 2)
-sc.setConn()
-print(sc.getLux())
-sc.closeConn()
+# sc = SerialConn.setPort(115200 , 2)
+# sc.setConn()
+# print(sc.getLux())
+# sc.closeConn()
 
 
 
